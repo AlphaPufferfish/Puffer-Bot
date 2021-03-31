@@ -27,40 +27,40 @@ async def rps(message, arg):
   choices = ['rock', 'paper', 'scissors']
   choice = random.choice(choices)
   if arg == choice:
-    result = discord.Embed(title="Rock paper scissors", description="It's a draw!", color=0x00ff00)
+    result = discord.Embed(title="Rock paper scissors", description="It's a draw!", color=discord.Colour.from_rgb(242, 235, 34))
     result.add_field(name="You picked", value=arg, inline=False)
     result.add_field(name="I picked", value=choice, inline=False)
     await message.send(embed=result)  
   elif arg == "rock":
     if choice == "paper":
-      result = discord.Embed(title="Rock paper scissors", description="I win!", color=0x00ff00)
+      result = discord.Embed(title="Rock paper scissors", description="I win!", color=discord.Colour.from_rgb(242, 235, 34))
       result.add_field(name="You picked", value=arg, inline=False)
       result.add_field(name="I picked", value=choice, inline=False)
       await message.send(embed=result)  
     else:
-      result = discord.Embed(title="Rock paper scissors", description="You win!", color=0x00ff00)
+      result = discord.Embed(title="Rock paper scissors", description="You win!", color=discord.Colour.from_rgb(242, 235, 34))
       result.add_field(name="You picked", value=arg, inline=False)
       result.add_field(name="I picked", value=choice, inline=False)
       await message.send(embed=result)  
   elif arg == "paper":
     if choice == "scissors":
-      result = discord.Embed(title="Rock paper scissors", description="I win!", color=0x00ff00)
+      result = discord.Embed(title="Rock paper scissors", description="I win!", color=discord.Colour.from_rgb(242, 235, 34))
       result.add_field(name="You picked", value=arg, inline=False)
       result.add_field(name="I picked", value=choice, inline=False)
       await message.send(embed=result)  
     else:
-      result = discord.Embed(title="Rock paper scissors", description="You win!", color=0x00ff00)
+      result = discord.Embed(title="Rock paper scissors", description="You win!", color=discord.Colour.from_rgb(242, 235, 34))
       result.add_field(name="You picked", value=arg, inline=False)
       result.add_field(name="I picked", value=choice, inline=False)
       await message.send(embed=result)  
   elif arg == "scissors":
     if choice == "rock":
-      result = discord.Embed(title="Rock paper scissors", description="I win!", color=0x00ff00)
+      result = discord.Embed(title="Rock paper scissors", description="I win!", color=discord.Colour.from_rgb(242, 235, 34))
       result.add_field(name="You picked", value=arg, inline=False)
       result.add_field(name="I picked", value=choice, inline=False)
       await message.send(embed=result)  
     else:
-      result = discord.Embed(title="Rock paper scissors", description="You win!", color=0x00ff00)
+      result = discord.Embed(title="Rock paper scissors", description="You win!", color=discord.Colour.from_rgb(242, 235, 34))
       result.add_field(name="You picked", value=arg, inline=False)
       result.add_field(name="I picked", value=choice, inline=False)
       await message.send(embed=result)  

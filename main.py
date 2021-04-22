@@ -13,7 +13,7 @@ bot = commands.Bot(command_prefix="p!")
 async def on_ready():
   print(f"{bot.user} is alive!")
 
-  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="to p!info"))
+  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="p!info"))
 
 # the oldest joke in the book
 @bot.command()
@@ -37,13 +37,17 @@ async def rps(message, arg):
     if arg == choice:
       outcome = "It's a draw!" 
     elif arg == "rock" and choice == "paper" or arg == "paper" and choice == "scissors" or arg == "scissors" and choice == "rock":
-        outcome = "I win!"
+        outcome = "You lost!"
     else:
-        outcome = "You win!"
+        outcome = "You won!"
     result = discord.Embed(title="Rock paper scissors", description=outcome, color=discord.Colour.from_rgb(242, 235, 34))
     result.add_field(name="You picked", value=arg, inline=False)
     result.add_field(name="I picked", value=choice, inline=False)
+    result.set_thumbnail(url="https://i.imgur.com/duOJoq2.png")
     await message.send(embed=result) 
 
+@bot.command()
+async def play(message, url : str):
+  pass
 web_server()
 bot.run(os.getenv('TOKEN'))

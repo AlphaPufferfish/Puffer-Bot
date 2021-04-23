@@ -47,7 +47,28 @@ async def rps(message, arg):
     await message.send(embed=result) 
 
 @bot.command()
-async def play(message, url : str):
-  pass
+async def joke(message, arg = None):
+  jokes = [
+    """
+    Joke 1
+    """,
+    """
+    Joke 2
+    """,
+    """
+    Joke 3
+    """,
+  ]
+  if arg:
+    if not arg.isdigit() or int(arg) > len(jokes) or int(arg)<= 0:
+      await message.send("Joke number not valid, please try again!")
+    else:
+      s ="ai ales gluma " + arg
+      await message.send(s)
+  else:
+    s = "gluma random"
+    await message.send(s)
+ # joke = random.choice(jokes)
+ # await message.send(joke)
 web_server()
 bot.run(os.getenv('TOKEN'))

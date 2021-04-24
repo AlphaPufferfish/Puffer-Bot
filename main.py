@@ -23,7 +23,12 @@ async def tenie(message):
 # info command
 @bot.command()
 async def info(message):
-  await message.send('Work in progress\nBot by AlphaPuffer')
+  t = "Bot by AlphaPuffer"
+  emb = discord.Embed(title = t, description = "Here's a list of all of the commands:", color=discord.Colour.from_rgb(242, 235, 34))
+  emb.add_field(name = "p!rps [choice]",value = "Play a game of rock, paper, scissors!", inline = False)
+  emb.add_field(name = "p!joke number",value = "Tells you the number of jokes Puffer Bot currently knows!", inline = False)
+  emb.add_field(name = "p!joke [number]",value = "Tells you the joke with the selected number! If no number was chosen he'll tell you a random one.", inline = False)
+  await message.send(embed = emb)
 
 # rock paper scissors command
 @bot.command()

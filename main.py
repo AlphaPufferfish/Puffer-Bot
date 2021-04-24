@@ -46,29 +46,43 @@ async def rps(message, arg):
     result.set_thumbnail(url="https://i.imgur.com/duOJoq2.png")
     await message.send(embed=result) 
 
+# random/chosen jokes command
 @bot.command()
 async def joke(message, arg = None):
   jokes = [
-    """
-    Joke 1
-    """,
-    """
-    Joke 2
-    """,
-    """
-    Joke 3
-    """,
+"""
+A man is told the local bank offers mortgages with no interest.
+The man enters the bank.
+
+Man: I’m here to find out about the mortgage.
+Employee: I don’t really care.
+""",
+"""
+What do sprinters eat before a race?
+
+Nothing. They fast.
+""",
+"""
+How many Buzzfeed employees does it take to operate an electric chair?
+
+10, but 4 will shock you.
+""",
   ]
   if arg:
     if not arg.isdigit() or int(arg) > len(jokes) or int(arg)<= 0:
-      await message.send("Joke number not valid, please try again!")
+      t = "Joke number not valid, please try again!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
     else:
-      s ="ai ales gluma " + arg
-      await message.send(s)
+      t = "Joke No." + arg
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      emb.add_field(name = '\u200b' , value = jokes[int(arg)-1], inline=False)
+      await message.send(embed = emb)
   else:
-    s = "gluma random"
-    await message.send(s)
- # joke = random.choice(jokes)
- # await message.send(joke)
+      nr = random.randint(1,len(jokes))
+      t = "Joke No." + str(nr)
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      emb.add_field(name = '\u200b' , value = jokes[nr-1], inline=False)
+      await message.send(embed = emb)
 web_server()
 bot.run(os.getenv('TOKEN'))

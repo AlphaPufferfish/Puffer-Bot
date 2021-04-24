@@ -5,8 +5,29 @@ import json
 import random
 from web_sever import web_server
 from discord.ext import commands
+from replit import db
 
 bot = commands.Bot(command_prefix="p!")
+
+# helper functions for the user joke db
+
+def add_user_joke(joke):
+  if "u_jokes" in db.keys():
+    u_jokes = db["u_jokes"]
+    u_jokes.append(joke)
+    db["u_jokes"] = u_jokes
+  else:
+    db["u_jokes"] = [joke]
+
+def delete_joke(index):
+  u_jokes = db["u_jokes"]
+  if len(u_jokes) >= index:
+    del u_jokes[index-1]
+    db["u_jokes"] = u_jokes
+  else:
+    t = "Index does not exist!"
+    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+    return emb;
 
 # stuff happening on launch
 @bot.event
@@ -102,6 +123,43 @@ Get your drunk ass off the carousel.
       t = "Joke No." + str(nr)
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       emb.add_field(name = '\u200b' , value = jokes[nr-1], inline=False)
+      await message.send(embed = emb)
+
+# user submitted jokes
+@bot.command()
+async def ujoke(message,* , arg = None):
+  u_jokes = db["u_jokes"]
+  if arg:
+    if arg.startswith("add "):
+      joke = arg.split("add",1)[1]
+      add_user_joke(joke)
+      t = "Joke has been added successfully!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    elif arg.startswith("delete "):
+      joke = arg.split("delete",1)[1]
+      delete_joke(int(joke))
+      t = "Joke has been deleted!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    elif arg == "number":
+      t = "Currently Puffer Bot knows " +str(len(u_jokes)) + " user submitted joke(s)!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    elif not arg.isdigit() or int(arg) > len(u_jokes) or int(arg)<= 0:
+      t = "Joke number not valid, please try again!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    else:
+      t = "Joke No." + arg
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      emb.add_field(name = '\u200b' , value = u_jokes[int(arg)-1], inline=False)
+      await message.send(embed = emb)
+  else:
+      nr = random.randint(1,len(u_jokes))
+      t = "Joke No." + str(nr)
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
       await message.send(embed = emb)
 web_server()
 bot.run(os.getenv('TOKEN'))

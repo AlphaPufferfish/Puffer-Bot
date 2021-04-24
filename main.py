@@ -73,7 +73,7 @@ async def rps(message, arg):
     await message.send(embed=result) 
 
 # random/chosen jokes command
-@bot.command()
+@bot.command(aliases = ["Joke", "JOKE"])
 async def joke(message, arg = None):
   jokes = [
 """
@@ -130,13 +130,7 @@ Get your drunk ass off the carousel.
 async def ujoke(message,* , arg = None):
   u_jokes = db["u_jokes"]
   if arg:
-    if arg.startswith("add "):
-      joke = arg.split("add",1)[1]
-      add_user_joke(joke)
-      t = "Joke has been added successfully!"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-    elif arg.startswith("delete "):
+    if arg.startswith("delete "):
       joke = arg.split("delete",1)[1]
       delete_joke(int(joke))
       t = "Joke has been deleted!"
@@ -161,5 +155,25 @@ async def ujoke(message,* , arg = None):
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
       await message.send(embed = emb)
+
+# submit a joke
+@bot.command()
+@commands.cooldown(1, 3600, commands.BucketType.user)
+async def jsubmit(message,* , arg = None):
+  if arg:
+    add_user_joke(arg)
+    t = "Joke has been added successfully!"
+  else:
+    t = "No joke has been entered, please try again!"
+  emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+  await message.send(embed = emb)
+
+#submit cooldown handler
+@jsubmit.error
+async def jsubmit_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Submit not available yet!",description=f"Try again in {error.retry_after//60:.0f} minutes.", color=discord.Colour.from_rgb(242, 235, 34))
+        await ctx.send(embed=em)
+
 web_server()
 bot.run(os.getenv('TOKEN'))

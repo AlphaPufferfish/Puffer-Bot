@@ -161,8 +161,11 @@ async def ujoke(message,* , arg = None):
 @commands.cooldown(1, 3600, commands.BucketType.user)
 async def jsubmit(message,* , arg = None):
   if arg:
-    add_user_joke(arg)
-    t = "Joke has been added successfully!"
+    if len(arg)<=1024:
+     add_user_joke(arg)
+     t = "Joke has been added successfully!"
+    else:
+      t = "Joke too long!Please enter a joke no longer than 1024 characters!"
   else:
     t = "No joke has been entered, please try again!"
   emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))

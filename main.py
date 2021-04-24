@@ -67,9 +67,23 @@ How many Buzzfeed employees does it take to operate an electric chair?
 
 10, but 4 will shock you.
 """,
+"""
+What does Jeff Bezos do right before bed time?
+
+He puts his pjamazon.
+""",
+"""
+You're riding a horse full speed, there's a giraffe beside you and you're being chased by a lion. What do you do?
+
+Get your drunk ass off the carousel.
+"""
   ]
   if arg:
-    if not arg.isdigit() or int(arg) > len(jokes) or int(arg)<= 0:
+    if arg == "number":
+      t = "Currently Puffer Bot knows " + str(len(jokes)) + " jokes!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    elif not arg.isdigit() or int(arg) > len(jokes) or int(arg)<= 0:
       t = "Joke number not valid, please try again!"
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       await message.send(embed = emb)

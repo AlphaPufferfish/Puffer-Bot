@@ -27,19 +27,25 @@ def add_vote(id):
   else:
     db["likes"] = [id]
 
-def dislike(id):
+def init_dislike():
   if "dislikes" in db.keys():
     dislikes = db["dislikes"]
-    dislikes.append([id])
+    dislikes.append([])
     db["dislikes"] = dislikes
   else:
-    db["dislikes"] = [id]
+    db["dislikes"] = []
 
 def delete_joke(index):
   u_jokes = db["u_jokes"]
+  likes = db["likes"]
+  dislikes = db["dislikes"]
   if len(u_jokes) >= index:
     del u_jokes[index-1]
+    del likes[index-1]
+    del dislikes[index-1]
     db["u_jokes"] = u_jokes
+    db["likes"] = likes
+    db["dislikes"] = dislikes
   else:
     t = "Index does not exist!"
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
@@ -174,6 +180,7 @@ async def jsubmit(message,* , arg = None):
     if len(arg)<=1024:
      add_user_joke(arg)
      add_vote(message.author.id)
+     init_dislike()
      t = "Joke has been added successfully!"
     else:
       t = "Joke too long!Please enter a joke no longer than 1024 characters!"
@@ -193,6 +200,7 @@ async def jsubmit_error(ctx, error):
 @bot.command()
 async def like(message, nr = None):
   likes = db["likes"]
+  dislikes = db["dislikes"]
   uid = message.author.id
   if nr and nr.isdigit() and int(nr) <= len(likes) and int(nr)>0:
     if uid in likes[int(nr)-1]:
@@ -200,8 +208,10 @@ async def like(message, nr = None):
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       await message.send(embed = emb)
     else:
+      if uid in dislikes[int(nr)-1]:
+        dislikes[int(nr)-1].remove(uid)
       likes[int(nr)-1].append(uid)
-      t = "You liked joke No." + nr + "!"
+      t = "You liked joke No." + nr + " !"
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       await message.send(embed = emb)
   else:
@@ -209,6 +219,31 @@ async def like(message, nr = None):
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
     await message.send(embed = emb)
   db["likes"] = likes
+  db["dislikes"] = dislikes
+
+@bot.command()
+async def dislike(message, nr = None):
+  likes = db["likes"]
+  dislikes = db["dislikes"]
+  uid = message.author.id
+  if nr and nr.isdigit() and int(nr) <= len(likes) and int(nr)>0:
+    if uid in dislikes[int(nr)-1]:
+      t = "You already disliked this joke!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    else:
+      if uid in likes[int(nr)-1]:
+        likes[int(nr)-1].remove(uid)
+      dislikes[int(nr)-1].append(uid)
+      t = "You disliked joke No." + nr + " !"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+  else:
+    t = "Joke number not valid, please try again!"
+    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+    await message.send(embed = emb)
+  db["likes"] = likes
+  db["dislikes"] = dislikes
 
 @bot.command()
 async def pr(message):
@@ -217,11 +252,6 @@ async def pr(message):
   print(likes)
   print(dislikes)
   print("-----")
-  print(likes[0])
-  print("----")
-  print(likes[1])
-  print("-----")
-  print(likes[2])
 
 web_server()
 bot.run(os.getenv('TOKEN'))

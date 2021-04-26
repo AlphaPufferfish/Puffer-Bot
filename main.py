@@ -27,6 +27,14 @@ def add_vote(id):
   else:
     db["likes"] = [id]
 
+def dislike(id):
+  if "dislikes" in db.keys():
+    dislikes = db["dislikes"]
+    dislikes.append([id])
+    db["dislikes"] = dislikes
+  else:
+    db["dislikes"] = [id]
+
 def delete_joke(index):
   u_jokes = db["u_jokes"]
   if len(u_jokes) >= index:
@@ -138,13 +146,7 @@ Get your drunk ass off the carousel.
 async def ujoke(message,* , arg = None):
   u_jokes = db["u_jokes"]
   if arg:
-    if arg.startswith("delete "):
-      joke = arg.split("delete",1)[1]
-      delete_joke(int(joke))
-      t = "Joke has been deleted!"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-    elif arg == "number":
+    if arg == "number":
       t = "Currently Puffer Bot knows " +str(len(u_jokes)) + " user submitted joke(s)!"
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       await message.send(embed = emb)
@@ -189,10 +191,37 @@ async def jsubmit_error(ctx, error):
 
 # vote system
 @bot.command()
-async def like(message, arg):
+async def like(message, nr = None):
   likes = db["likes"]
-  await message.send(f"Joke 2 has {len(likes[1])} like(s)")
+  uid = message.author.id
+  if nr and nr.isdigit() and int(nr) <= len(likes) and int(nr)>0:
+    if uid in likes[int(nr)-1]:
+      t = "You already liked this joke!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+    else:
+      likes[int(nr)-1].append(uid)
+      t = "You liked joke No." + nr + "!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
+  else:
+    t = "Joke number not valid, please try again!"
+    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+    await message.send(embed = emb)
+  db["likes"] = likes
 
+@bot.command()
+async def pr(message):
+  likes = db["likes"]
+  dislikes = db["dislikes"]
+  print(likes)
+  print(dislikes)
+  print("-----")
+  print(likes[0])
+  print("----")
+  print(likes[1])
+  print("-----")
+  print(likes[2])
 
 web_server()
 bot.run(os.getenv('TOKEN'))

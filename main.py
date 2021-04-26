@@ -19,6 +19,14 @@ def add_user_joke(joke):
   else:
     db["u_jokes"] = [joke]
 
+def add_vote(id):
+  if "likes" in db.keys():
+    likes = db["likes"]
+    likes.append([id])
+    db["likes"] = likes
+  else:
+    db["likes"] = [id]
+
 def delete_joke(index):
   u_jokes = db["u_jokes"]
   if len(u_jokes) >= index:
@@ -163,6 +171,7 @@ async def jsubmit(message,* , arg = None):
   if arg:
     if len(arg)<=1024:
      add_user_joke(arg)
+     add_vote(message.author.id)
      t = "Joke has been added successfully!"
     else:
       t = "Joke too long!Please enter a joke no longer than 1024 characters!"
@@ -171,12 +180,19 @@ async def jsubmit(message,* , arg = None):
   emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
   await message.send(embed = emb)
 
-#submit cooldown handler
+# submit cooldown handler
 @jsubmit.error
 async def jsubmit_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Submit not available yet!",description=f"Try again in {error.retry_after//60:.0f} minutes.", color=discord.Colour.from_rgb(242, 235, 34))
         await ctx.send(embed=em)
+
+# vote system
+@bot.command()
+async def like(message, arg):
+  likes = db["likes"]
+  await message.send(f"Joke 2 has {len(likes[1])} like(s)")
+
 
 web_server()
 bot.run(os.getenv('TOKEN'))

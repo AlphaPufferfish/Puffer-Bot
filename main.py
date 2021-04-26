@@ -151,8 +151,23 @@ Get your drunk ass off the carousel.
 @bot.command()
 async def ujoke(message,* , arg = None):
   u_jokes = db["u_jokes"]
+  likes = db["likes"]
+  dislikes = db["dislikes"]
   if arg:
-    if arg == "number":
+    if arg == "stats":
+      if u_jokes:
+        t = "Here are the stats for the user submitted jokes!"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        for i in range(len(u_jokes)):
+          n = "Joke No." + str(i+1)
+          v = str(len(likes[i])) + " likes and " + str(len(dislikes[i])) + " dislikes."
+          emb.add_field(name = n , value = v, inline=False)
+        await message.send(embed = emb)
+      else:
+        t = "There are currently no jokes in the database!"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        await message.send(embed = emb)
+    elif arg == "number":
       t = "Currently Puffer Bot knows " +str(len(u_jokes)) + " user submitted joke(s)!"
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       await message.send(embed = emb)
@@ -247,6 +262,9 @@ async def dislike(message, nr = None):
 
 @bot.command()
 async def pr(message):
+  db["likes"] = []
+  db["dislikes"] = []
+  db["u_jokes"] = []
   likes = db["likes"]
   dislikes = db["dislikes"]
   print(likes)

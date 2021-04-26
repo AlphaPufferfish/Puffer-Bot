@@ -36,6 +36,7 @@ def init_dislike():
     db["dislikes"] = []
 
 def delete_joke(index):
+  index = int(index)
   u_jokes = db["u_jokes"]
   likes = db["likes"]
   dislikes = db["dislikes"]
@@ -250,21 +251,24 @@ async def dislike(message, nr = None):
       if uid in likes[int(nr)-1]:
         likes[int(nr)-1].remove(uid)
       dislikes[int(nr)-1].append(uid)
-      t = "You disliked joke No." + nr + " !"
+      t = "You disliked joke No." + str(nr) + " !"
       emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
       await message.send(embed = emb)
+      if len(dislikes[int(nr)-1]) - len(likes[int(nr)-1]) >= 3:
+        t = "The public has spoken, with " + str(len(dislikes[int(nr)-1])) + " dislikes joke No." + str(nr) + " is gone!"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        await message.send(embed = emb)
+        delete_joke(nr)
+      else:
+        db["likes"] = likes
+        db["dislikes"] = dislikes
   else:
     t = "Joke number not valid, please try again!"
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
     await message.send(embed = emb)
-  db["likes"] = likes
-  db["dislikes"] = dislikes
 
 @bot.command()
 async def pr(message):
-  db["likes"] = []
-  db["dislikes"] = []
-  db["u_jokes"] = []
   likes = db["likes"]
   dislikes = db["dislikes"]
   print(likes)

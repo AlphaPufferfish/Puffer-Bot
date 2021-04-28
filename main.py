@@ -76,7 +76,7 @@ async def info(message):
   emb.add_field(name = "p!jsubmit [joke]",value = "Tell Puffer Bot a joke and he'll remember it! Other players can then read your joke and vote it! To avoid spam this command has a cooldown set of one hour per user.", inline = False)
   emb.add_field(name = "p!ujoke number",value = "Tells you the number of user submitted jokes Puffer Bot Knows!", inline = False)
   emb.add_field(name = "p!ujoke [number]",value = "Tells you the user submitted joke with the selected number! If no number was chosen he'll tell you a random one.", inline = False)
-  emb.add_field(name = "p!joke stats",value = "Lists all the user submitted jokes and the amount of likes and dislikes they have!", inline = False)
+  emb.add_field(name = "p!ujoke stats",value = "Lists all the user submitted jokes and the amount of likes and dislikes they have!", inline = False)
   emb.add_field(name = "p!like [number]",value = "Use this to give one of the user submitted jokes your like!", inline = False)
   emb.add_field(name = "p!dislike [number]",value = "Use this to give one of the user submitted jokes a dislike! If a joke has 3 more dislikes than likes Puffer Bot will delete it!", inline = False)
   await message.send(embed = emb)
@@ -172,7 +172,7 @@ async def ujoke(message,* , arg = None):
             emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
             for i in range(len(u_jokes)):
               n = "Joke No." + str(i+1)
-              v = str(len(likes[i])) + " likes and " + str(len(dislikes[i])) + " dislikes."
+              v = str(len(likes[i])) + " like(s) and " + str(len(dislikes[i])) + " dislike(s)."
               emb.add_field(name = n , value = v, inline=False)
             await message.send(embed = emb)
         elif arg == "number":
@@ -187,16 +187,16 @@ async def ujoke(message,* , arg = None):
           t = "Joke No." + arg
           emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
           emb.add_field(name = '\u200b' , value = u_jokes[int(arg)-1], inline=False)
-          emb.add_field(name = "Likes" , value = len(likes[int(arg)-1]), inline=True)
-          emb.add_field(name = 'Dislikes' , value = len(dislikes[int(arg)-1]), inline=True)
+          emb.add_field(name = "Like(s)" , value = len(likes[int(arg)-1]), inline=True)
+          emb.add_field(name = 'Dislike(s)' , value = len(dislikes[int(arg)-1]), inline=True)
           await message.send(embed = emb)
     else:
         nr = random.randint(1,len(u_jokes))
         t = "Joke No." + str(nr)
         emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
         emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
-        emb.add_field(name = "Likes" , value = len(likes[nr-1]), inline=True)
-        emb.add_field(name = 'Dislikes' , value = len(dislikes[nr-1]), inline=True)
+        emb.add_field(name = "Like(s)" , value = len(likes[nr-1]), inline=True)
+        emb.add_field(name = 'Dislike(s)' , value = len(dislikes[nr-1]), inline=True)
         await message.send(embed = emb)
 
 # submit a joke
@@ -277,6 +277,11 @@ async def dislike(message, nr = None):
     t = "Joke number not valid, please try again!"
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
     await message.send(embed = emb)
+
+@bot.command()
+async def test(message):
+  print(message.author.display_name)
+  print(message.author.avatar_url)
 
 web_server()
 bot.run(os.getenv('TOKEN'))

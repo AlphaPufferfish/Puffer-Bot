@@ -51,13 +51,16 @@ def delete_joke(index):
   u_jokes = db["u_jokes"]
   likes = db["likes"]
   dislikes = db["dislikes"]
+  data = db["data"]
   if len(u_jokes) >= index:
     del u_jokes[index-1]
     del likes[index-1]
     del dislikes[index-1]
+    del data[index-1]
     db["u_jokes"] = u_jokes
     db["likes"] = likes
     db["dislikes"] = dislikes
+    db["data"] = data
   else:
     t = "Index does not exist!"
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
@@ -172,6 +175,7 @@ async def ujoke(message,* , arg = None):
   u_jokes = db["u_jokes"]
   likes = db["likes"]
   dislikes = db["dislikes"]
+  data = db["data"]
   if not u_jokes:
     t = "There are currently no jokes in the database!"
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
@@ -200,6 +204,7 @@ async def ujoke(message,* , arg = None):
           emb.add_field(name = '\u200b' , value = u_jokes[int(arg)-1], inline=False)
           emb.add_field(name = "Like(s)" , value = len(likes[int(arg)-1]), inline=True)
           emb.add_field(name = 'Dislike(s)' , value = len(dislikes[int(arg)-1]), inline=True)
+          emb.set_author(name=data[int(arg)-1][0], icon_url=data[int(arg)-1][1])
           await message.send(embed = emb)
     else:
         nr = random.randint(1,len(u_jokes))
@@ -208,6 +213,7 @@ async def ujoke(message,* , arg = None):
         emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
         emb.add_field(name = "Like(s)" , value = len(likes[nr-1]), inline=True)
         emb.add_field(name = 'Dislike(s)' , value = len(dislikes[nr-1]), inline=True)
+        emb.set_author(name=data[int(arg)-1][0], icon_url=data[int(arg)-1][1])
         await message.send(embed = emb)
 
 # submit a joke
@@ -295,22 +301,20 @@ async def dislike(message, nr = None):
     await message.send(embed = emb)
 
 # debugging comms
-@bot.command()
-async def cl(message):
-  db["u_jokes"] = []
-  db["likes"] = []
-  db["dislikes"] = []
-  db["data"] = []
-  await message.send("Database Cleared!")
+#@bot.command()
+#async def cl(message):
+#  db["u_jokes"] = []
+#  db["likes"] = []
+#  db["dislikes"] = []
+#  db["data"] = []
+#  await message.send("Database Cleared!")
 
-@bot.command()
-async def test(message):
-  user = message.author.avatar_url
-  print(str(user))
-  likes = db["likes"]
-  data = db["data"]
-  print(likes)
-  print(data)
+#@bot.command()
+#async def test(message):
+#  likes = db["likes"]
+#  data = db["data"]
+#  print(likes)
+#  print(data)
 #  print(message.author.display_name)
 #  print(message.author.avatar_url)
 #  for i in bot.guilds:

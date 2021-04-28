@@ -69,9 +69,16 @@ async def tenie(message):
 async def info(message):
   t = "Bot by AlphaPuffer"
   emb = discord.Embed(title = t, description = "Here's a list of all of the commands:", color=discord.Colour.from_rgb(242, 235, 34))
+  emb.add_field(name = "p!info",value = "Brings up this page.", inline = False)
   emb.add_field(name = "p!rps [choice]",value = "Play a game of rock, paper, scissors!", inline = False)
   emb.add_field(name = "p!joke number",value = "Tells you the number of jokes Puffer Bot currently knows!", inline = False)
   emb.add_field(name = "p!joke [number]",value = "Tells you the joke with the selected number! If no number was chosen he'll tell you a random one.", inline = False)
+  emb.add_field(name = "p!jsubmit [joke]",value = "Tell Puffer Bot a joke and he'll remember it! Other players can then read your joke and vote it! To avoid spam this command has a cooldown set of one hour per user.", inline = False)
+  emb.add_field(name = "p!ujoke number",value = "Tells you the number of user submitted jokes Puffer Bot Knows!", inline = False)
+  emb.add_field(name = "p!ujoke [number]",value = "Tells you the user submitted joke with the selected number! If no number was chosen he'll tell you a random one.", inline = False)
+  emb.add_field(name = "p!joke stats",value = "Lists all the user submitted jokes and the amount of likes and dislikes they have!", inline = False)
+  emb.add_field(name = "p!like [number]",value = "Use this to give one of the user submitted jokes your like!", inline = False)
+  emb.add_field(name = "p!dislike [number]",value = "Use this to give one of the user submitted jokes a dislike! If a joke has 3 more dislikes than likes Puffer Bot will delete it!", inline = False)
   await message.send(embed = emb)
 
 # rock paper scissors command

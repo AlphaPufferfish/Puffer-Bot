@@ -187,12 +187,16 @@ async def ujoke(message,* , arg = None):
           t = "Joke No." + arg
           emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
           emb.add_field(name = '\u200b' , value = u_jokes[int(arg)-1], inline=False)
+          emb.add_field(name = "Likes" , value = len(likes[int(arg)-1]), inline=True)
+          emb.add_field(name = 'Dislikes' , value = len(dislikes[int(arg)-1]), inline=True)
           await message.send(embed = emb)
     else:
         nr = random.randint(1,len(u_jokes))
         t = "Joke No." + str(nr)
         emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
         emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
+        emb.add_field(name = "Likes" , value = len(likes[nr-1]), inline=True)
+        emb.add_field(name = 'Dislikes' , value = len(dislikes[nr-1]), inline=True)
         await message.send(embed = emb)
 
 # submit a joke

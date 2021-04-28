@@ -154,39 +154,39 @@ async def ujoke(message,* , arg = None):
   u_jokes = db["u_jokes"]
   likes = db["likes"]
   dislikes = db["dislikes"]
-  if arg:
-    if arg == "stats":
-      if u_jokes:
-        t = "Here are the stats for the user submitted jokes!"
-        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-        for i in range(len(u_jokes)):
-          n = "Joke No." + str(i+1)
-          v = str(len(likes[i])) + " likes and " + str(len(dislikes[i])) + " dislikes."
-          emb.add_field(name = n , value = v, inline=False)
-        await message.send(embed = emb)
-      else:
-        t = "There are currently no jokes in the database!"
-        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-        await message.send(embed = emb)
-    elif arg == "number":
-      t = "Currently Puffer Bot knows " +str(len(u_jokes)) + " user submitted joke(s)!"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-    elif not arg.isdigit() or int(arg) > len(u_jokes) or int(arg)<= 0:
-      t = "Joke number not valid, please try again!"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-    else:
-      t = "Joke No." + arg
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      emb.add_field(name = '\u200b' , value = u_jokes[int(arg)-1], inline=False)
-      await message.send(embed = emb)
+  if not u_jokes:
+    t = "There are currently no jokes in the database!"
+    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+    await message.send(embed = emb)
   else:
-      nr = random.randint(1,len(u_jokes))
-      t = "Joke No." + str(nr)
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
-      await message.send(embed = emb)
+    if arg:
+        if arg == "stats":
+            t = "Here are the stats for the user submitted jokes!"
+            emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+            for i in range(len(u_jokes)):
+              n = "Joke No." + str(i+1)
+              v = str(len(likes[i])) + " likes and " + str(len(dislikes[i])) + " dislikes."
+              emb.add_field(name = n , value = v, inline=False)
+            await message.send(embed = emb)
+        elif arg == "number":
+          t = "Currently Puffer Bot knows " +str(len(u_jokes)) + " user submitted joke(s)!"
+          emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+          await message.send(embed = emb)
+        elif not arg.isdigit() or int(arg) > len(u_jokes) or int(arg)<= 0:
+          t = "Joke number not valid, please try again!"
+          emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+          await message.send(embed = emb)
+        else:
+          t = "Joke No." + arg
+          emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+          emb.add_field(name = '\u200b' , value = u_jokes[int(arg)-1], inline=False)
+          await message.send(embed = emb)
+    else:
+        nr = random.randint(1,len(u_jokes))
+        t = "Joke No." + str(nr)
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
+        await message.send(embed = emb)
 
 # submit a joke
 @bot.command()

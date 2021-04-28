@@ -35,6 +35,17 @@ def init_dislike():
   else:
     db["dislikes"] = []
 
+def add_user_data(username,icon):
+  if "data" in db.keys():
+    data = db["data"]
+    data.append([username])
+  else:
+    db["data"] = [username]
+    data = db["data"]
+  data[len(data)-1].append(icon)
+  db["data"] = data
+
+
 def delete_joke(index):
   index = int(index)
   u_jokes = db["u_jokes"]
@@ -205,16 +216,21 @@ async def ujoke(message,* , arg = None):
 async def jsubmit(message,* , arg = None):
   if arg:
     if len(arg)<=1024:
-     add_user_joke(arg)
-     add_vote(message.author.id)
-     init_dislike()
-     t = "Joke has been added successfully!"
+      add_user_joke(arg)
+      add_vote(message.author.id)
+      init_dislike()
+      add_user_data(message.author.display_name,str(message.author.avatar_url))
+      t = "Joke has been added successfully!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
     else:
       t = "Joke too long!Please enter a joke no longer than 1024 characters!"
+      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+      await message.send(embed = emb)
   else:
     t = "No joke has been entered, please try again!"
-  emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-  await message.send(embed = emb)
+    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+    await message.send(embed = emb)
 
 # submit cooldown handler
 @jsubmit.error
@@ -278,10 +294,27 @@ async def dislike(message, nr = None):
     emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
     await message.send(embed = emb)
 
+# debugging comms
+@bot.command()
+async def cl(message):
+  db["u_jokes"] = []
+  db["likes"] = []
+  db["dislikes"] = []
+  db["data"] = []
+  await message.send("Database Cleared!")
+
 @bot.command()
 async def test(message):
-  print(message.author.display_name)
-  print(message.author.avatar_url)
+  user = message.author.avatar_url
+  print(str(user))
+  likes = db["likes"]
+  data = db["data"]
+  print(likes)
+  print(data)
+#  print(message.author.display_name)
+#  print(message.author.avatar_url)
+#  for i in bot.guilds:
+#    print(i)
 
 web_server()
 bot.run(os.getenv('TOKEN'))

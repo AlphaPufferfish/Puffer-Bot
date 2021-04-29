@@ -213,7 +213,7 @@ async def ujoke(message,* , arg = None):
         emb.add_field(name = '\u200b' , value = u_jokes[nr-1], inline=False)
         emb.add_field(name = "Like(s)" , value = len(likes[nr-1]), inline=True)
         emb.add_field(name = 'Dislike(s)' , value = len(dislikes[nr-1]), inline=True)
-        emb.set_author(name=data[int(arg)-1][0], icon_url=data[int(arg)-1][1])
+        emb.set_author(name=data[nr-1][0], icon_url=data[nr-1][1])
         await message.send(embed = emb)
 
 # submit a joke

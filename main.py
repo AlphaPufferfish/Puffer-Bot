@@ -205,7 +205,10 @@ async def ujoke(message,* , arg = None):
           emb.add_field(name = "Like(s)" , value = len(likes[int(arg)-1]), inline=True)
           emb.add_field(name = 'Dislike(s)' , value = len(dislikes[int(arg)-1]), inline=True)
           emb.set_author(name=data[int(arg)-1][0], icon_url=data[int(arg)-1][1])
-          await message.send(embed = emb)
+          emojis = ['\u2B06\uFE0F', '\u2B07\uFE0F']
+          msg = await message.send(embed=emb)
+          for emoji in emojis:
+            await msg.add_reaction(emoji)
     else:
         nr = random.randint(1,len(u_jokes))
         t = "Joke No." + str(nr)
@@ -214,7 +217,10 @@ async def ujoke(message,* , arg = None):
         emb.add_field(name = "Like(s)" , value = len(likes[nr-1]), inline=True)
         emb.add_field(name = 'Dislike(s)' , value = len(dislikes[nr-1]), inline=True)
         emb.set_author(name=data[nr-1][0], icon_url=data[nr-1][1])
-        await message.send(embed = emb)
+        emojis = ['\u2B06\uFE0F', '\u2B07\uFE0F']
+        msg = await message.send(embed=emb)
+        for emoji in emojis:
+          await msg.add_reaction(emoji)
 
 # submit a joke
 @bot.command()

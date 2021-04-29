@@ -252,6 +252,15 @@ async def jsubmit_error(ctx, error):
         await ctx.send(embed=em)
 
 # vote system
+
+@bot.event
+async def on_raw_reaction_add(payload):
+  msg = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+  if str(msg.author.id) == "826544799359696926" and msg.embeds[0].author:
+    print("ai reactionat la o gluma user submitted")
+  else:
+    return
+
 @bot.command()
 async def like(message, nr = None):
   likes = db["likes"]

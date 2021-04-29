@@ -257,81 +257,66 @@ async def jsubmit_error(ctx, error):
 async def on_raw_reaction_add(payload):
   if payload.member.bot:
     return
-  msg = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+  ch = bot.get_channel(payload.channel_id)
+  msg = await ch.fetch_message(payload.message_id)
   if str(msg.author.id) == "826544799359696926" and msg.embeds[0].author:
-    print("ai reactionat la o gluma user submitted")
+    likes = db["likes"]
+    dislikes = db["dislikes"]
+    uid = payload.member.id
+    if payload.emoji.name == '\u2B06\uFE0F':
+      nr = int(msg.embeds[0].title.split('.')[1])
+      if uid in likes[nr-1]:
+        t = "You already liked this joke!"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        await ch.send(embed = emb)
+      else:
+        if uid in dislikes[int(nr)-1]:
+          dislikes[nr-1].remove(uid)
+        likes[nr-1].append(uid)
+        t = "You liked joke No." + str(nr) + " !"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        await ch.send(embed = emb)
+    elif payload.emoji.name == '\u2B07\uFE0F':
+      # dislike reaction
+      nr = int(msg.embeds[0].title.split('.')[1])
+      if uid in dislikes[int(nr)-1]:
+        t = "You already disliked this joke!"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        await ch.send(embed = emb)
+      else:
+        if uid in likes[int(nr)-1]:
+          likes[int(nr)-1].remove(uid)
+        dislikes[int(nr)-1].append(uid)
+        t = "You disliked joke No." + str(nr) + " !"
+        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+        await ch.send(embed = emb)
+        if len(dislikes[int(nr)-1]) - len(likes[int(nr)-1]) >= 3:
+          t = "The public has spoken, with " + str(len(dislikes[int(nr)-1])) + " dislikes joke No." + str(nr) + " is gone!"
+          emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
+          await ch.send(embed = emb)
+          delete_joke(nr)
+    else:
+      return
+    db["likes"] = likes
+    db["dislikes"] = dislikes
   else:
     return
 
-@bot.command()
-async def like(message, nr = None):
-  likes = db["likes"]
-  dislikes = db["dislikes"]
-  uid = message.author.id
-  if nr and nr.isdigit() and int(nr) <= len(likes) and int(nr)>0:
-    if uid in likes[int(nr)-1]:
-      t = "You already liked this joke!"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-    else:
-      if uid in dislikes[int(nr)-1]:
-        dislikes[int(nr)-1].remove(uid)
-      likes[int(nr)-1].append(uid)
-      t = "You liked joke No." + nr + " !"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-  else:
-    t = "Joke number not valid, please try again!"
-    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-    await message.send(embed = emb)
-  db["likes"] = likes
-  db["dislikes"] = dislikes
-
-@bot.command()
-async def dislike(message, nr = None):
-  likes = db["likes"]
-  dislikes = db["dislikes"]
-  uid = message.author.id
-  if nr and nr.isdigit() and int(nr) <= len(likes) and int(nr)>0:
-    if uid in dislikes[int(nr)-1]:
-      t = "You already disliked this joke!"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-    else:
-      if uid in likes[int(nr)-1]:
-        likes[int(nr)-1].remove(uid)
-      dislikes[int(nr)-1].append(uid)
-      t = "You disliked joke No." + str(nr) + " !"
-      emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-      await message.send(embed = emb)
-      if len(dislikes[int(nr)-1]) - len(likes[int(nr)-1]) >= 3:
-        t = "The public has spoken, with " + str(len(dislikes[int(nr)-1])) + " dislikes joke No." + str(nr) + " is gone!"
-        emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-        await message.send(embed = emb)
-        delete_joke(nr)
-      else:
-        db["likes"] = likes
-        db["dislikes"] = dislikes
-  else:
-    t = "Joke number not valid, please try again!"
-    emb = discord.Embed(title = t, color=discord.Colour.from_rgb(242, 235, 34))
-    await message.send(embed = emb)
-
 # debugging comms
-#@bot.command()
-#async def cl(message):
-#  db["u_jokes"] = []
-#  db["likes"] = []
-#  db["dislikes"] = []
-#  db["data"] = []
-#  await message.send("Database Cleared!")
+@bot.command()
+async def cl(message):
+  db["u_jokes"] = []
+  db["likes"] = []
+  db["dislikes"] = []
+  db["data"] = []
+  await message.send("Database Cleared!")
 
-#@bot.command()
-#async def test(message):
-#  likes = db["likes"]
-#  data = db["data"]
-#  print(likes)
-#  print(data)
+@bot.command()
+async def test(message):
+  likes = db["likes"]
+  data = db["data"]
+  print(likes)
+  print(data)
 #  print(message.author.display_name)
 #  print(message.author.avatar_url)
 #  for i in bot.guilds:
